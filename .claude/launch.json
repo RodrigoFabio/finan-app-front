@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "appfinancas-dev",
+      "runtimeExecutable": "C:/nvm4w/nodejs/node.exe",
+      "runtimeArgs": ["node_modules/.bin/next", "dev"],
+      "port": 3000
+    }
+  ]
+}

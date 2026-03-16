@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ──────────────────────────────────────────── */
+:root {
+  --color-income: #10B981;
+  --color-expense: #F43F5E;
+  --color-accent: #6366F1;
+  --color-bg-app: #F8FAFC;
+  --color-sidebar: #0F172A;
+  --color-sidebar-hover: #1E293B;
+  --color-sidebar-active-bg: rgba(99, 102, 241, 0.12);
+  --color-sidebar-active-text: #A5B4FC;
+  --color-sidebar-active-border: #818CF8;
+  --sidebar-width-expanded: 240px;
+  --sidebar-width-collapsed: 64px;
+}
+
+/* ─── Base Resets ─────────────────────────────────────────────────────── */
+@layer base {
+  body {
+    background-color: var(--color-bg-app);
+    color: #0F172A;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  *, *::before, *::after {
+    border-color: #E2E8F0;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+}
+
+/* ─── Keyframes ───────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─── Animation & Utility Classes ─────────────────────────────────────── */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out both;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.25s ease-out both;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out both;
+  }
+
+  .animate-stagger > * {
+    animation: fadeIn 0.3s ease-out both;
+  }
+  .animate-stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .animate-stagger > *:nth-child(2) { animation-delay: 70ms; }
+  .animate-stagger > *:nth-child(3) { animation-delay: 140ms; }
+  .animate-stagger > *:nth-child(4) { animation-delay: 210ms; }
+  .animate-stagger > *:nth-child(5) { animation-delay: 280ms; }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-income {
+    background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #F1F5F9 25%,
+      #E2E8F0 50%,
+      #F1F5F9 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+    border-radius: 0.5rem;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
