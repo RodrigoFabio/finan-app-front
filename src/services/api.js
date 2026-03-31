@@ -1,7 +1,16 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://68c0c9000b196b9ce1c50894.mockapi.io/api/v1/', // Altere para a URL do seu backend
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333',
+});
+
+// Add token to requests if available
+api.interceptors.request.use((config) => {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export default api;

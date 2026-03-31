@@ -1,46 +1,56 @@
-export type Receita = {
-  id: string;
-  descricao: string;
-  valor: number;
-  data: string; // ISO: YYYY-MM-DD
-  categoria: "Salário" | "Freelance" | "Investimentos" | "Renda extra"|  "Outros";
-  isRecorrente: boolean;
-  observacao?: string;
-};
+import { PaginatedReceitas } from './receitas.types';
 
-export const receitasMock: Receita[] = [
-  {
-    id: "1",
-    descricao: "Salário mensal",
-    valor: 4500,
-    data: "2025-11-01",
-    categoria: "Salário",
-    isRecorrente: true,
-    observacao: "Pagamento empresa X",
-  },
-  {
-    id: "2",
-    descricao: "Freelance landing page",
-    valor: 1200,
-    data: "2025-11-10",
-    categoria: "Freelance",
-    isRecorrente: false,
-  },
-  {
-    id: "3",
-    descricao: "Dividendos ações",
-    valor: 350,
-    data: "2025-11-15",
-    categoria: "Investimentos",
-    isRecorrente: true,
-  },
-  {
-    id: "4",
-    descricao: "Venda de equipamento",
-    valor: 800,
-    data: "2025-11-20",
-    categoria: "Outros",
-    isRecorrente: false,
-    observacao: "Notebook antigo",
-  },
-];
+export const receitasMock: PaginatedReceitas = {
+  data: [
+    {
+      id: '1',
+      userId: 'u1',
+      description: 'Salário mensal',
+      amount: 4500,
+      type: 1,
+      date: '2025-11-01',
+      notes: 'Pagamento empresa X',
+      category: 1,
+      createdAt: '2025-11-01T00:00:00Z',
+      updatedAt: '2025-11-01T00:00:00Z',
+    },
+    {
+      id: '2',
+      userId: 'u1',
+      description: 'Freelance landing page',
+      amount: 1200,
+      type: 1,
+      date: '2025-11-10',
+      category: 2,
+      createdAt: '2025-11-10T00:00:00Z',
+      updatedAt: '2025-11-10T00:00:00Z',
+    },
+    {
+      id: '3',
+      userId: 'u1',
+      description: 'Dividendos ações',
+      amount: 350,
+      type: 1,
+      date: '2025-11-15',
+      category: 3,
+      createdAt: '2025-11-15T00:00:00Z',
+      updatedAt: '2025-11-15T00:00:00Z',
+    },
+    {
+      id: '4',
+      userId: 'u1',
+      description: 'Venda de equipamento',
+      amount: 800,
+      type: 1,
+      date: '2025-11-20',
+      notes: 'Notebook antigo',
+      category: 5,
+      createdAt: '2025-11-20T00:00:00Z',
+      updatedAt: '2025-11-20T00:00:00Z',
+    },
+  ],
+  total: 4,
+  page: 1,
+  limit: 20,
+  totalPages: 1,
+};

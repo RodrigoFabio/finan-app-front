@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { getReceitas } from '@/services/Receitas/receitas.service';
+import { getDashboardData } from '@/services/Dashboard/dashboard.service';
 import { KpiCard } from '@/app/_components/KpiCard/KpiCard';
 import { Button, IconPlus, IconTrendingUp, IconTrendingDown, IconWallet, IconCalendar } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
@@ -22,20 +22,18 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function DashboardPageContent() {
-  const receitas = getReceitas();
-  const totalReceitas = receitas.reduce((sum, r) => sum + r.valor, 0);
-  const totalDespesas = 3240.50;
-  const saldo = totalReceitas - totalDespesas;
-  const totalParcelamentos = 850.00;
-
-  // Agrupamento por categoria
-  const porCategoria = receitas.reduce<Record<string, number>>((acc, r) => {
-    acc[r.categoria] = (acc[r.categoria] || 0) + r.valor;
-    return acc;
-  }, {});
-
-  const receitasRecorrentes = receitas.filter(r => r.isRecorrente).length;
-  const recentReceitas = [...receitas].sort((a, b) => b.data.localeCompare(a.data)).slice(0, 4);
+  const {
+    totalReceitas,
+    totalDespesas,
+    saldo,
+    totalParcelamentos,
+    totalEntradas,
+    receitasRecorrentes,
+    maiorReceita,
+    mediaReceita,
+    receitasRecentes,
+    porCategoria,
+  } = getDashboardData();
 
   const now = new Date();
   const monthName = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
@@ -72,7 +70,7 @@ export default function DashboardPageContent() {
         <KpiCard
           title="Receitas"
           value={fmt(totalReceitas)}
-          subtitle={`${receitas.length} entradas`}
+          subtitle={`${totalEntradas} entradas`}
           trendText="Este mês"
           trendUp={true}
           Icon={IconTrendingUp}
@@ -121,7 +119,7 @@ export default function DashboardPageContent() {
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        {/* Transações Recentes */}
+        {/* Receitas Recentes */}
         <div className="lg:col-span-2 bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden animate-fade-in">
           <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
             <h2 className="text-sm font-semibold text-neutral-800">Receitas Recentes</h2>
@@ -132,7 +130,7 @@ export default function DashboardPageContent() {
             </Link>
           </div>
           <div className="divide-y divide-neutral-50">
-            {recentReceitas.map((receita) => (
+            {receitasRecentes.map((receita) => (
               <div
                 key={receita.id}
                 className="flex items-center justify-between px-5 py-3.5 hover:bg-neutral-50/60 transition-colors duration-100"
@@ -152,7 +150,7 @@ export default function DashboardPageContent() {
                       )}>
                         {receita.categoria}
                       </span>
-                      {receita.isRecorrente && (
+                      {receita.recorrente && (
                         <span className="text-xs text-neutral-400">· Recorrente</span>
                       )}
                     </div>
@@ -176,24 +174,21 @@ export default function DashboardPageContent() {
           <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-5">
             <h2 className="text-sm font-semibold text-neutral-800 mb-4">Por Categoria</h2>
             <div className="space-y-3">
-              {Object.entries(porCategoria).map(([cat, total]) => {
-                const pct = Math.round((total / totalReceitas) * 100);
-                return (
-                  <div key={cat}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-medium text-neutral-600">{cat}</span>
-                      <span className="text-xs font-semibold text-neutral-800">{fmt(total)}</span>
-                    </div>
-                    <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary-400 rounded-full transition-all duration-700"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                    <p className="text-xs text-neutral-400 mt-0.5">{pct}% do total</p>
+              {porCategoria.map(({ nome, total, percentual }) => (
+                <div key={nome}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-neutral-600">{nome}</span>
+                    <span className="text-xs font-semibold text-neutral-800">{fmt(total)}</span>
                   </div>
-                );
-              })}
+                  <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary-400 rounded-full transition-all duration-700"
+                      style={{ width: `${percentual}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-neutral-400 mt-0.5">{percentual}% do total</p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -204,20 +199,16 @@ export default function DashboardPageContent() {
               <div className="flex justify-between items-center">
                 <span className="text-xs text-neutral-500">Entradas recorrentes</span>
                 <span className="text-xs font-semibold text-neutral-700">
-                  {receitasRecorrentes} de {receitas.length}
+                  {receitasRecorrentes} de {totalEntradas}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-neutral-500">Maior receita</span>
-                <span className="text-xs font-semibold text-neutral-700">
-                  {fmt(Math.max(...receitas.map(r => r.valor)))}
-                </span>
+                <span className="text-xs font-semibold text-neutral-700">{fmt(maiorReceita)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-neutral-500">Média por entrada</span>
-                <span className="text-xs font-semibold text-neutral-700">
-                  {fmt(totalReceitas / receitas.length)}
-                </span>
+                <span className="text-xs font-semibold text-neutral-700">{fmt(mediaReceita)}</span>
               </div>
               <div className="pt-2 border-t border-neutral-100">
                 <div className="flex justify-between items-center">

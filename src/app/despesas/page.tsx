@@ -4,19 +4,19 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ListLayout } from '@/layouts';
 import { Button, IconPlus } from '@/components/ui';
-import { getReceitas } from '@/services/Receitas/receitas.service';
-import { Receita, ListReceitasQuery } from '@/services/Receitas/receitas.types';
+import { getDespesas } from '@/services/Despesas/despesas.service';
+import { Despesa, ListDespesasQuery } from '@/services/Despesas/despesas.types';
 import Filter from './_components/Filter';
-import ReceitaCard from './_components/ReceitaCard';
+import DespesaCard from './_components/DespesaCard';
 
-export default function ReceitasPage() {
+export default function DespesasPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [receitas, setReceitas] = useState<Receita[]>([]);
+  const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const query: ListReceitasQuery = {};
+    const query: ListDespesasQuery = {};
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
     const category = searchParams.get('category');
@@ -25,18 +25,21 @@ export default function ReceitasPage() {
     if (category) query.category = Number(category);
 
     setLoading(true);
-    getReceitas(query)
-      .then((result) => setReceitas(result.data))
+    getDespesas(query)
+      .then((result) => setDespesas(result.data))
       .finally(() => setLoading(false));
   }, [searchParams]);
 
   return (
     <ListLayout
-      title="Receitas"
+      title="Despesas"
       actions={
-        <Button onClick={() => router.push('/receitas/cadastrar')}>
+        <Button
+          onClick={() => router.push('/despesas/cadastrar')}
+          className="bg-rose-600 hover:bg-rose-700 focus:ring-rose-500"
+        >
           <IconPlus size={14} />
-          Nova Receita
+          Nova Despesa
         </Button>
       }
       filters={<Filter />}
@@ -45,16 +48,16 @@ export default function ReceitasPage() {
         <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
           Carregando...
         </div>
-      ) : receitas.length === 0 ? (
+      ) : despesas.length === 0 ? (
         <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
-          Nenhuma receita encontrada.
+          Nenhuma despesa encontrada.
         </div>
       ) : (
-        receitas.map((receita) => (
-          <ReceitaCard
-            key={receita.id}
-            receita={receita}
-            onClick={() => router.push(`/receitas/${receita.id}`)}
+        despesas.map((despesa) => (
+          <DespesaCard
+            key={despesa.id}
+            despesa={despesa}
+            onClick={() => router.push(`/despesas/editar/${despesa.id}`)}
           />
         ))
       )}
