@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { DM_Sans, Syne } from 'next/font/google';
 import { ClientProviders } from './_components/ClientProviders';
-import { Sidebar } from './_components/SiderBar';
 import './globals.css';
 
 const dmSans = DM_Sans({
@@ -30,14 +29,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${dmSans.variable} ${syne.variable}`}>
       <body className="bg-neutral-50 font-sans antialiased">
         <ClientProviders>
-          <div className="flex h-screen overflow-hidden">
-            <Sidebar />
-            <main className="flex-1 flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-auto">
-                {children}
-              </div>
-            </main>
-          </div>
+          {children}
         </ClientProviders>
       </body>
     </html>

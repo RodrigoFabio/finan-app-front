@@ -1,3 +1,5 @@
+import api from '@/services/api';
+import { handleApiError } from '@/utils/api-error';
 import { resumoMock, transacoesMock } from './relatorios.mocks';
 import type {
   ResumoFinanceiro,
@@ -7,33 +9,28 @@ import type {
   ListTransacoesQuery,
 } from './relatorios.types';
 
-// import api from '@/services/api';
-
-export async function getResumoFinanceiro(_query?: QueryResumo): Promise<ResumoFinanceiro> {
-  // --- Backend (comentado temporariamente) ---
-  // try {
-  //   const response = await api.get<ResumoFinanceiro>('/api/transactions/summary', { params: _query });
-  //   return response.data;
-  // } catch (error) {
-  //   handleApiError(error);
-  // }
-
-  return resumoMock;
+export async function getResumoFinanceiro(query?: QueryResumo): Promise<ResumoFinanceiro> {
+  try {
+    const response = await api.get<ResumoFinanceiro>('/api/transactions/summary', { params: query });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
 export async function getTransacoesPorPeriodo(
-  _periodo: PeriodoRelatorio,
-  _query?: Omit<ListTransacoesQuery, 'startDate' | 'endDate'>
+  periodo: PeriodoRelatorio,
+  query?: Omit<ListTransacoesQuery, 'startDate' | 'endDate'>
 ): Promise<PaginatedRelatorios> {
-  // --- Backend (comentado temporariamente) ---
-  // try {
-  //   const response = await api.get<PaginatedRelatorios>('/api/transactions', {
-  //     params: { ..._query, startDate: _periodo.startDate, endDate: _periodo.endDate },
-  //   });
-  //   return response.data;
-  // } catch (error) {
-  //   handleApiError(error);
-  // }
-
-  return transacoesMock;
+  try {
+    const response = await api.get<PaginatedRelatorios>('/api/transactions', {
+      params: { ...query, startDate: periodo.startDate, endDate: periodo.endDate },
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
 }
+
+// Mocks mantidos para referência e testes locais
+export { resumoMock, transacoesMock };

@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from 'react';
+import { forwardRef, useId } from 'react';
 import { getInputClasses } from './input-variants';
 import { InputProps } from './Input.types';
 import { cn } from '@/utils/cn';
@@ -22,7 +22,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const generatedId = useId();
+    const inputId = id || generatedId;
     const hasError = !!error;
     const finalIntent = hasError ? 'error' : intent;
 

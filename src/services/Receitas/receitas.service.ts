@@ -1,3 +1,4 @@
+import api from '@/services/api';
 import { handleApiError } from '@/utils/api-error';
 import { receitasMock } from './receitas.mocks';
 import type {
@@ -8,76 +9,57 @@ import type {
   PaginatedReceitas,
 } from './receitas.types';
 
-// import api from '@/services/api';
+const TRANSACTION_TYPE_RECEITA = 2; // TransactionType.INCOME = 2 no backend
 
-const TRANSACTION_TYPE_RECEITA = 1;
-
-export async function getReceitas(_query?: ListReceitasQuery): Promise<PaginatedReceitas> {
-  // --- Backend (comentado temporariamente) ---
-  // try {
-  //   const response = await api.get<PaginatedReceitas>('/api/transactions', {
-  //     params: { ..._query, type: TRANSACTION_TYPE_RECEITA },
-  //   });
-  //   return response.data;
-  // } catch (error) {
-  //   handleApiError(error);
-  // }
-
-  return receitasMock;
+export async function getReceitas(query?: ListReceitasQuery): Promise<PaginatedReceitas> {
+  try {
+    const response = await api.get<PaginatedReceitas>('/api/transactions', {
+      params: { ...query, type: TRANSACTION_TYPE_RECEITA },
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
 export async function getReceitaById(id: string): Promise<Receita> {
   try {
-    const found = receitasMock.data.find((r) => r.id === id);
-    if (!found) throw new Error(`Receita ${id} não encontrada`);
-    return found;
+    console.log("::::::::::::::::::::::::::::::::: id :::::::::::::::::::::::::::::", id);
+    const response = await api.get<Receita>(`/api/transactions/${id}`);
+    return response.data;
   } catch (error) {
     handleApiError(error);
   }
 }
 
 export async function createReceita(data: CreateReceitaDto): Promise<Receita> {
-  // --- Backend (comentado temporariamente) ---
-  // try {
-  //   const response = await api.post<Receita>('/api/transactions', {
-  //     ...data,
-  //     type: TRANSACTION_TYPE_RECEITA,
-  //   });
-  //   return response.data;
-  // } catch (error) {
-  //   handleApiError(error);
-  // }
-
-  const nova: Receita = {
-    ...data,
-    id: String(Date.now()),
-    userId: 'u1',
-    type: TRANSACTION_TYPE_RECEITA,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  return nova;
+  try {
+    const response = await api.post<Receita>('/api/transactions', {
+      ...data,
+      type: TRANSACTION_TYPE_RECEITA,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
 export async function updateReceita(id: string, data: UpdateReceitaDto): Promise<Receita> {
-  // --- Backend (comentado temporariamente) ---
-  // try {
-  //   const response = await api.put<Receita>(`/api/transactions/${id}`, data);
-  //   return response.data;
-  // } catch (error) {
-  //   handleApiError(error);
-  // }
-
-  const existing = receitasMock.data.find((r) => r.id === id);
-  if (!existing) throw new Error(`Receita ${id} não encontrada`);
-  return { ...existing, ...data, updatedAt: new Date().toISOString() };
+  try {
+    const response = await api.put<Receita>(`/api/transactions/${id}`, data);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
-export async function deleteReceita(_id: string): Promise<void> {
-  // --- Backend (comentado temporariamente) ---
-  // try {
-  //   await api.delete(`/api/transactions/${_id}`);
-  // } catch (error) {
-  //   handleApiError(error);
-  // }
+export async function deleteReceita(id: string): Promise<void> {
+  try {
+    await api.delete(`/api/transactions/${id}`);
+  } catch (error) {
+    handleApiError(error);
+  }
 }
+
+// Mock mantido para referência e testes locais
+export { receitasMock };

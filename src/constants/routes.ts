@@ -4,8 +4,8 @@
  */
 
 export const ROUTES = {
-  LOGIN: "/",
-  HOME: "/",
+  LOGIN: "/login",
+  HOME: "/login",
   DASHBOARD: "/dashboard",
 
   RECEITAS: {
@@ -76,7 +76,7 @@ export type RoutePath = typeof ROUTES[keyof typeof ROUTES] |
   typeof ROUTES[keyof typeof ROUTES][keyof typeof ROUTES[keyof typeof ROUTES]];
 
 // Mantém compatibilidade com código existente (deprecated)
-export const FINAN = "http://localhost:3000/";
+//export const FINAN = "http://localhost:3000/";
 
 export const ROUTESBASE = {
   RECEITA: ROUTES.RECEITAS.ROOT,

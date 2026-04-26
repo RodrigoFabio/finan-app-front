@@ -1,5 +1,5 @@
 // Tipos do módulo Despesas
-// Despesa é uma Transaction de saída (type=2 no backend)
+// Despesa é uma Transaction de saída (type=1 no backend — TransactionType.EXPENSE)
 
 export interface Despesa {
   id: string;
@@ -17,7 +17,6 @@ export interface Despesa {
 export interface CreateDespesaDto {
   description: string;
   amount: number;
-  type: number;
   date: string;
   notes?: string;
   category: number;
@@ -26,7 +25,6 @@ export interface CreateDespesaDto {
 export interface UpdateDespesaDto {
   description?: string;
   amount?: number;
-  type?: number;
   date?: string;
   notes?: string;
   category?: number;
@@ -41,9 +39,8 @@ export interface ListDespesasQuery {
 }
 
 export interface PaginatedDespesas {
-  data: Despesa[];
+  items: Despesa[];
   total: number;
   page: number;
   limit: number;
-  totalPages: number;
 }

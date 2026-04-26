@@ -1,5 +1,5 @@
 // Tipos do módulo Receitas
-// Receita é uma Transaction de entrada (type=1 no backend)
+// Receita é uma Transaction de entrada (type=2 no backend — TransactionType.INCOME)
 
 export interface Receita {
   id: string;
@@ -41,9 +41,8 @@ export interface ListReceitasQuery {
 }
 
 export interface PaginatedReceitas {
-  data: Receita[];
+  items: Receita[];
   total: number;
   page: number;
   limit: number;
-  totalPages: number;
 }

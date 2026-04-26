@@ -8,7 +8,7 @@ export interface Parcelamento {
   totalInstallments: number;
   startDate: string;
   category: number;
-  status: 'active' | 'cancelled' | 'completed';
+  status: string;
   createdAt: string;
   updatedAt: string;
 }

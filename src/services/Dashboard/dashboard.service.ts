@@ -1,7 +1,8 @@
 // Dashboard service — retorna todos os valores pré-computados para a tela de visão geral.
-// Trocar os mocks de despesas/parcelamentos pelos serviços reais quando o backend estiver pronto.
 
-import { receitasMock } from '@/services/Receitas/receitas.mocks';
+import { getReceitas } from '@/services/Receitas/receitas.service';
+import { getDespesas } from '@/services/Despesas/despesas.service';
+import { getParcelamentos } from '@/services/Parcelamentos/parcelamentos.service';
 
 // Mapeamento de category (number) → nome exibido
 const CATEGORIA_NOMES: Record<number, string> = {
@@ -41,22 +42,30 @@ export interface DashboardData {
   porCategoria: CategoriaResumo[];
 }
 
-export function getDashboardData(): DashboardData {
-  const receitas: ReceitaResumo[] = receitasMock.data.map((r) => ({
+export async function getDashboardData(): Promise<DashboardData> {
+  const [receitasResult, despesasResult, parcelamentosResult] = await Promise.allSettled([
+    getReceitas(),
+    getDespesas(),
+    getParcelamentos(),
+  ]);
+
+  const receitasData = receitasResult.status === 'fulfilled' ? receitasResult.value?.data ?? [] : [];
+  const despesasData = despesasResult.status === 'fulfilled' ? despesasResult.value?.data ?? [] : [];
+  const parcelamentosData = parcelamentosResult.status === 'fulfilled' ? parcelamentosResult.value ?? [] : [];
+
+  const receitas: ReceitaResumo[] = receitasData.map((r) => ({
     id: r.id,
     descricao: r.description,
     valor: r.amount,
     data: r.date,
     categoria: CATEGORIA_NOMES[r.category] ?? 'Outros',
-    recorrente: false, // campo não existe no backend ainda
+    recorrente: false,
     observacao: r.notes,
   }));
 
-  // --- Mocks de outros módulos (substituir pelo service real futuramente) ---
-  const totalDespesas = 3240.50;
-  const totalParcelamentos = 850.00;
-
   const totalReceitas = receitas.reduce((sum, r) => sum + r.valor, 0);
+  const totalDespesas = despesasData.reduce((sum, d) => sum + d.amount, 0);
+  const totalParcelamentos = parcelamentosData.reduce((sum, p) => sum + (p.installmentAmount ?? 0), 0);
   const saldo = totalReceitas - totalDespesas;
 
   const categoryMap: Record<string, number> = {};
@@ -66,15 +75,15 @@ export function getDashboardData(): DashboardData {
   const porCategoria: CategoriaResumo[] = Object.entries(categoryMap).map(([nome, total]) => ({
     nome,
     total,
-    percentual: Math.round((total / totalReceitas) * 100),
+    percentual: totalReceitas > 0 ? Math.round((total / totalReceitas) * 100) : 0,
   }));
 
   const receitasRecentes = [...receitas]
     .sort((a, b) => b.data.localeCompare(a.data))
     .slice(0, 4);
 
-  const maiorReceita = Math.max(...receitas.map((r) => r.valor));
-  const mediaReceita = totalReceitas / receitas.length;
+  const maiorReceita = receitas.length > 0 ? Math.max(...receitas.map((r) => r.valor)) : 0;
+  const mediaReceita = receitas.length > 0 ? totalReceitas / receitas.length : 0;
   const receitasRecorrentes = receitas.filter((r) => r.recorrente).length;
 
   return {

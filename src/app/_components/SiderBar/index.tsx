@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   IconDashboard,
   IconReceitas,
@@ -34,6 +35,7 @@ const MENU_ITEMS: MenuItem[] = [
 export const Sidebar = () => {
   const pathname = usePathname();
   const { isCollapsed, toggleCollapse } = useSidebar();
+  const { user, logout } = useAuth();
 
   const isItemActive = (route: string) => {
     if (route === '/dashboard') return pathname === '/dashboard' || pathname.startsWith('/dashboard/');
@@ -130,6 +132,37 @@ export const Sidebar = () => {
           </button>
         </div>
       )}
+
+      {/* User + Logout */}
+      <div className={cn(
+        'border-t border-neutral-800 p-2',
+        isCollapsed ? 'flex flex-col items-center gap-1' : 'flex flex-col gap-1'
+      )}>
+        {!isCollapsed && user && (
+          <div className="px-3 py-2">
+            <p className="text-xs font-medium text-neutral-300 truncate">{user.name}</p>
+            <p className="text-xs text-neutral-500 truncate">{user.email}</p>
+          </div>
+        )}
+        <button
+          onClick={logout}
+          title="Sair"
+          className={cn(
+            'flex items-center gap-3 px-3 py-2.5 rounded-lg w-full transition-all duration-150',
+            'text-neutral-500 hover:bg-neutral-800 hover:text-error-400',
+            isCollapsed && 'justify-center'
+          )}
+        >
+          {/* Logout icon */}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          {!isCollapsed && <span className="text-sm">Sair</span>}
+        </button>
+      </div>
     </aside>
   );
 };
