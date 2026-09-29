@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui';
 import { InputControlled, SelectControlled } from '@/components/ui/controlled';
 import DatePickerControlled from '@/app/_components/DatePickerControlled';
+import FormActions from '@/app/_components/FormActions';
 import { createReceita, updateReceita } from '@/services/Receitas/receitas.service';
 import { ReceitaSchema, ReceitaFormValues, receitaCategorias } from './formSchema';
 import type { FormReceitaProps } from './form.types';
@@ -14,7 +14,7 @@ export default function FormReceita({ receita, isEditMode = false }: FormReceita
   const router = useRouter();
 
   const { control, handleSubmit, formState: { isSubmitting } } = useForm<ReceitaFormValues>({
-    resolver: zodResolver(ReceitaSchema),
+    resolver: zodResolver(ReceitaSchema) as Resolver<ReceitaFormValues>,
     defaultValues: isEditMode && receita
       ? {
           description: receita.description,
@@ -89,14 +89,11 @@ export default function FormReceita({ receita, isEditMode = false }: FormReceita
         placeholder="Observações adicionais (opcional)"
       />
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-200">
-        <Button variant="outline" type="button" onClick={() => router.push('/receitas')}>
-          Cancelar
-        </Button>
-        <Button type="submit" isLoading={isSubmitting}>
-          {isEditMode ? 'Salvar Alterações' : 'Cadastrar'}
-        </Button>
-      </div>
+      <FormActions
+        onCancel={() => router.push('/receitas')}
+        isSubmitting={isSubmitting}
+        isEditMode={isEditMode}
+      />
     </form>
   );
 }

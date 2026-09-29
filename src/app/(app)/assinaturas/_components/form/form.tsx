@@ -1,19 +1,20 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { useForm, useWatch, Controller } from 'react-hook-form';
+import { useForm, Resolver, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui';
-import { InputControlled, SelectControlled } from '@/components/ui/controlled';
+import { InputControlled, SelectControlled, SwitchControlled } from '@/components/ui/controlled';
+import FormActions from '@/app/_components/FormActions';
 import { createAssinatura, updateAssinatura } from '@/services/Assinaturas/assinaturas.service';
 import { AssinaturaSchema, type AssinaturaFormValues, assinaturaTipos, assinaturaCategorias } from './formSchema';
 import type { FormAssinaturaProps } from './form.types';
+import BillingDayHint from './BillingDayHint';
 
 export default function FormAssinatura({ assinatura, isEditMode = false }: FormAssinaturaProps) {
   const router = useRouter();
 
   const { control, handleSubmit, formState: { isSubmitting } } = useForm<AssinaturaFormValues>({
-    resolver: zodResolver(AssinaturaSchema),
+    resolver: zodResolver(AssinaturaSchema) as Resolver<AssinaturaFormValues>,
     defaultValues: isEditMode && assinatura
       ? {
           description: assinatura.description,
@@ -75,11 +76,7 @@ export default function FormAssinatura({ assinatura, isEditMode = false }: FormA
             max="28"
             placeholder="Ex: 15"
           />
-          {billingDay > 0 && (
-            <p className="text-xs text-violet-600 font-medium">
-              Cobrança todo dia {billingDay} do mês
-            </p>
-          )}
+          <BillingDayHint day={billingDay} />
         </div>
       </div>
 
@@ -99,49 +96,18 @@ export default function FormAssinatura({ assinatura, isEditMode = false }: FormA
         />
       </div>
 
-      <div className="flex items-center gap-3 py-2">
-        <Controller
-          name="isActive"
-          control={control}
-          render={({ field }) => (
-            <button
-              type="button"
-              role="switch"
-              aria-checked={field.value}
-              onClick={() => field.onChange(!field.value)}
-              className={`
-                relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent
-                transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2
-                ${field.value ? 'bg-violet-600' : 'bg-neutral-200'}
-              `}
-            >
-              <span
-                className={`
-                  pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0
-                  transition duration-200 ease-in-out
-                  ${field.value ? 'translate-x-5' : 'translate-x-0'}
-                `}
-              />
-            </button>
-          )}
-        />
-        <label className="text-sm text-neutral-700 font-medium">
-          Assinatura {isActive ? 'ativa' : 'inativa'}
-        </label>
-      </div>
+      <SwitchControlled
+        name="isActive"
+        control={control}
+        label={`Assinatura ${isActive ? 'ativa' : 'inativa'}`}
+      />
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-200">
-        <Button variant="outline" type="button" onClick={() => router.push('/assinaturas')}>
-          Cancelar
-        </Button>
-        <Button
-          type="submit"
-          isLoading={isSubmitting}
-          className="bg-violet-600 hover:bg-violet-700 focus:ring-violet-500"
-        >
-          {isEditMode ? 'Salvar Alterações' : 'Cadastrar'}
-        </Button>
-      </div>
+      <FormActions
+        onCancel={() => router.push('/assinaturas')}
+        isSubmitting={isSubmitting}
+        isEditMode={isEditMode}
+        submitClassName="bg-violet-600 hover:bg-violet-700 focus:ring-violet-500"
+      />
     </form>
   );
 }

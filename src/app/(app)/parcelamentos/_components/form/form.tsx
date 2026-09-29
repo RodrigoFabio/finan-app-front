@@ -1,23 +1,21 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui';
 import { InputControlled, SelectControlled } from '@/components/ui/controlled';
 import DatePickerControlled from '@/app/_components/DatePickerControlled';
+import FormActions from '@/app/_components/FormActions';
 import { createParcelamento, updateParcelamento } from '@/services/Parcelamentos/parcelamentos.service';
 import { ParcelamentoSchema, type ParcelamentoFormValues, parcelamentoCategorias } from './formSchema';
 import type { FormParcelamentoProps } from './form.types';
-
-const fmt = (val: number) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+import InstallmentEstimate from './InstallmentEstimate';
 
 export default function FormParcelamento({ parcelamento, isEditMode = false }: FormParcelamentoProps) {
   const router = useRouter();
 
   const { control, handleSubmit, formState: { isSubmitting } } = useForm<ParcelamentoFormValues>({
-    resolver: zodResolver(ParcelamentoSchema),
+    resolver: zodResolver(ParcelamentoSchema) as Resolver<ParcelamentoFormValues>,
     defaultValues: isEditMode && parcelamento
       ? {
           description: parcelamento.description,
@@ -79,16 +77,7 @@ export default function FormParcelamento({ parcelamento, isEditMode = false }: F
         />
       </div>
 
-      {installmentValue > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <p className="text-sm text-amber-800 font-medium">
-            Valor estimado por parcela:{' '}
-            <span className="text-lg font-semibold text-amber-900">
-              {fmt(installmentValue)}
-            </span>
-          </p>
-        </div>
-      )}
+      <InstallmentEstimate value={installmentValue} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <DatePickerControlled
@@ -105,18 +94,13 @@ export default function FormParcelamento({ parcelamento, isEditMode = false }: F
         />
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-200">
-        <Button variant="outline" type="button" onClick={() => router.push('/parcelamentos')}>
-          Cancelar
-        </Button>
-        <Button
-          type="submit"
-          isLoading={isSubmitting}
-          className="bg-amber-600 hover:bg-amber-700 focus:ring-amber-500"
-        >
-          {isEditMode ? 'Salvar Alterações' : 'Cadastrar Parcelamento'}
-        </Button>
-      </div>
+      <FormActions
+        onCancel={() => router.push('/parcelamentos')}
+        isSubmitting={isSubmitting}
+        isEditMode={isEditMode}
+        createLabel="Cadastrar Parcelamento"
+        submitClassName="bg-amber-600 hover:bg-amber-700 focus:ring-amber-500"
+      />
     </form>
   );
 }
