@@ -1,7 +1,7 @@
 import { PaginatedDespesas } from './despesas.types';
 
 export const despesasMock: PaginatedDespesas = {
-  data: [
+  items: [
     {
       id: '1',
       userId: 'u1',
@@ -62,5 +62,4 @@ export const despesasMock: PaginatedDespesas = {
   total: 5,
   page: 1,
   limit: 20,
-  totalPages: 1,
 };

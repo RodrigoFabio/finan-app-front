@@ -141,6 +141,13 @@ export interface ListTransactionsQuery {
   limit?: number;
 }
 
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface TransactionSummaryQuery {
   startDate?: string;
   endDate?: string;

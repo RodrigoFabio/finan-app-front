@@ -1,7 +1,7 @@
 import { PaginatedReceitas } from './receitas.types';
 
 export const receitasMock: PaginatedReceitas = {
-  data: [
+  items: [
     {
       id: '1',
       userId: 'u1',
@@ -52,5 +52,4 @@ export const receitasMock: PaginatedReceitas = {
   total: 4,
   page: 1,
   limit: 20,
-  totalPages: 1,
 };

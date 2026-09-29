@@ -5,20 +5,20 @@
 
 import { ColumnConfig } from '@/components/data-display/DataTable/DataTable.types';
 import { formatCurrency, formatDate } from '@/components/data-display/DataTable/table-utils';
-import { Receita } from '@/services/Receitas/receitas.mocks';
+import type { Receita } from '@/services/Receitas/receitas.types';
 import { ROUTES, parseRoute } from '@/constants/routes';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui';
 
 export const receitasTableConfig: ColumnConfig<Receita>[] = [
   {
-    key: 'descricao',
+    key: 'description',
     label: 'Descrição',
     sortable: true,
     width: '30%',
   },
   {
-    key: 'valor',
+    key: 'amount',
     label: 'Valor',
     format: (val) => formatCurrency(val),
     align: 'right',
@@ -26,22 +26,22 @@ export const receitasTableConfig: ColumnConfig<Receita>[] = [
     width: '15%',
   },
   {
-    key: 'data',
+    key: 'date',
     label: 'Data',
     format: (val) => formatDate(val),
     sortable: true,
     width: '15%',
   },
   {
-    key: 'categoria',
+    key: 'category',
     label: 'Categoria',
     sortable: true,
     width: '15%',
   },
   {
-    key: 'isRecorrente',
-    label: 'Recorrente',
-    render: (value) => (value ? 'Sim' : 'Não'),
+    key: 'type',
+    label: 'Tipo',
+    render: () => 'Receita',
     align: 'center',
     width: '10%',
   },

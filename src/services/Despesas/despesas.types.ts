@@ -20,6 +20,7 @@ export interface CreateDespesaDto {
   date: string;
   notes?: string;
   category: number;
+  type?: number; // Opcional, padrão é 1 (TransactionType.EXPENSE)
 }
 
 export interface UpdateDespesaDto {

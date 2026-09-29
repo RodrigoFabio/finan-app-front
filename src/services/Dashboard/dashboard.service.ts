@@ -49,8 +49,8 @@ export async function getDashboardData(): Promise<DashboardData> {
     getParcelamentos(),
   ]);
 
-  const receitasData = receitasResult.status === 'fulfilled' ? receitasResult.value?.data ?? [] : [];
-  const despesasData = despesasResult.status === 'fulfilled' ? despesasResult.value?.data ?? [] : [];
+  const receitasData = receitasResult.status === 'fulfilled' ? receitasResult.value?.items ?? [] : [];
+  const despesasData = despesasResult.status === 'fulfilled' ? despesasResult.value?.items ?? [] : [];
   const parcelamentosData = parcelamentosResult.status === 'fulfilled' ? parcelamentosResult.value ?? [] : [];
 
   const receitas: ReceitaResumo[] = receitasData.map((r) => ({
@@ -60,12 +60,12 @@ export async function getDashboardData(): Promise<DashboardData> {
     data: r.date,
     categoria: CATEGORIA_NOMES[r.category] ?? 'Outros',
     recorrente: false,
-    observacao: r.notes,
+    ...(r.notes !== undefined ? { observacao: r.notes } : {}),
   }));
 
   const totalReceitas = receitas.reduce((sum, r) => sum + r.valor, 0);
   const totalDespesas = despesasData.reduce((sum, d) => sum + d.amount, 0);
-  const totalParcelamentos = parcelamentosData.reduce((sum, p) => sum + (p.installmentAmount ?? 0), 0);
+  const totalParcelamentos = parcelamentosData.reduce((sum, p) => sum + p.totalAmount, 0);
   const saldo = totalReceitas - totalDespesas;
 
   const categoryMap: Record<string, number> = {};
