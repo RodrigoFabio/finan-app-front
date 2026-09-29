@@ -1,29 +1,27 @@
 "use client";
 
-import { Controller, Control } from 'react-hook-form';
+import { Controller, Control, FieldValues, Path } from 'react-hook-form';
 
 interface SelectOption {
   value: number | string;
   label: string;
 }
 
-interface SelectControlledProps {
-  name: string;
-  // Control<any> para aceitar qualquer form sem quebrar inferência em JSX
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+interface SelectControlledProps<T extends FieldValues> {
+  name: Path<T>;
+  control: Control<T>;
   options: readonly SelectOption[];
   label?: string;
   placeholder?: string;
 }
 
-export default function SelectControlled({
+export default function SelectControlled<T extends FieldValues>({
   name,
   control,
   options,
   label,
   placeholder = 'Selecione...',
-}: SelectControlledProps) {
+}: SelectControlledProps<T>) {
   return (
     <Controller
       name={name}

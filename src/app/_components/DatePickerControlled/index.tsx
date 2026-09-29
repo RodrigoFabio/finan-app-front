@@ -1,17 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { Controller, Control } from 'react-hook-form';
+import { Controller, Control, FieldValues, Path } from 'react-hook-form';
 import { DayPicker } from 'react-day-picker';
 import { format, parse, isValid } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/utils/cn';
 import 'react-day-picker/style.css';
 
-interface DatePickerControlledProps {
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+interface DatePickerControlledProps<T extends FieldValues> {
+  name: Path<T>;
+  control: Control<T>;
   label?: string;
   placeholder?: string;
 }
@@ -98,12 +97,12 @@ function DatePickerInput({
   );
 }
 
-export default function DatePickerControlled({
+export default function DatePickerControlled<T extends FieldValues>({
   name,
   control,
-  label,
-  placeholder,
-}: DatePickerControlledProps) {
+  label = "Data",
+  placeholder = "dd/mm/aaaa",
+}: DatePickerControlledProps<T>) {
   return (
     <Controller
       name={name}
@@ -114,7 +113,7 @@ export default function DatePickerControlled({
           onChange={field.onChange}
           label={label}
           placeholder={placeholder}
-          error={fieldState.error?.message}
+          {...(fieldState.error?.message && { error: fieldState.error.message })}
         />
       )}
     />
