@@ -47,8 +47,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-dm-sans)', 'DM Sans', 'system-ui', 'sans-serif'],
-        display: ['var(--font-syne)', 'Syne', 'system-ui', 'sans-serif'],
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        display: ['Syne', 'system-ui', 'sans-serif'],
         mono: ['Fira Code', 'monospace'],
       },
       fontSize: {
