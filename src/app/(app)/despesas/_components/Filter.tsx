@@ -39,6 +39,7 @@ export default function Filter() {
 
   const [startDate, setStartDate] = useState(searchParams?.get('startDate') ?? defaults.startDate);
   const [endDate, setEndDate] = useState(searchParams?.get('endDate') ?? defaults.endDate);
+  const categoryParam = searchParams?.get('category') ?? '';
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -87,7 +88,7 @@ export default function Filter() {
           <label className="text-sm font-medium text-neutral-700">Categoria</label>
           <select
             name="category"
-            defaultValue={searchParams?.get('category') ?? ''}
+            defaultValue={categoryParam}
             className="h-10 rounded-lg border border-neutral-300 bg-white px-3 text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-rose-400"
           >
             {categoryOptions.map((opt) => (

@@ -23,6 +23,7 @@ export default function Filter() {
 
   const [startDate, setStartDate] = useState(searchParams?.get('startDate') ?? defaults.startDate);
   const [endDate, setEndDate] = useState(searchParams?.get('endDate') ?? defaults.endDate);
+  const categoryParam = searchParams?.get('category') ?? '';
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -72,7 +73,7 @@ export default function Filter() {
           type="number"
           name="category"
           placeholder="Ex: 1"
-          defaultValue={searchParams?.get('category') ?? ''}
+          defaultValue={categoryParam}
           fullWidth={false}
           className="w-28"
         />
