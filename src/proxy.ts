@@ -4,8 +4,7 @@ import type { NextRequest } from 'next/server';
 const AUTH_PATHS = ['/login'];
 const PUBLIC_PATHS = ['/login'];
 
-export function middleware(request: NextRequest) {
-  console.log("REQUEST:::::::::::::::::::::: ",request)
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthenticated = request.cookies.has('auth-session');
 
@@ -16,14 +15,12 @@ export function middleware(request: NextRequest) {
     (p) => pathname === p || pathname.startsWith(p + '/')
   );
 
-  // Usuário não autenticado tentando acessar rota protegida
   if (!isAuthenticated && !isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  // Usuário autenticado tentando acessar tela de auth
   if (isAuthenticated && isAuthPath) {
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
