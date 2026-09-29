@@ -2,20 +2,20 @@ import { z } from 'zod';
 
 export const ParcelamentoSchema = z.object({
   description: z
-    .string({ required_error: 'Descrição é obrigatória' })
+    .string('Descrição é obrigatória')
     .min(3, 'Mínimo 3 caracteres')
     .max(100),
   totalAmount: z.coerce
-    .number({ invalid_type_error: 'Informe um valor válido' })
+    .number('Informe um valor válido')
     .positive('O valor deve ser positivo'),
   totalInstallments: z.coerce
-    .number({ invalid_type_error: 'Informe um número válido' })
+    .number('Informe um número válido')
     .int()
     .min(2, 'Mínimo 2 parcelas')
     .max(48, 'Máximo 48 parcelas'),
-  startDate: z.string({ required_error: 'Data de início é obrigatória' }).min(1),
+  startDate: z.string('Data de início é obrigatória').min(1),
   category: z.coerce
-    .number({ invalid_type_error: 'Selecione uma categoria' })
+    .number('Selecione uma categoria')
     .int(),
 });
 

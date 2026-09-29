@@ -2,15 +2,15 @@ import { z } from 'zod';
 
 export const DespesaSchema = z.object({
   description: z
-    .string({ required_error: 'Descrição é obrigatória' })
+    .string('Descrição é obrigatória')
     .min(3, 'Mínimo 3 caracteres')
     .max(100, 'Máximo 100 caracteres'),
   amount: z.coerce
-    .number({ invalid_type_error: 'Informe um valor válido' })
+    .number('Informe um valor válido')
     .positive('O valor deve ser positivo'),
-  date: z.string({ required_error: 'Data é obrigatória' }).min(1, 'Data é obrigatória'),
+  date: z.string('Data é obrigatória').min(1, 'Data é obrigatória'),
   category: z.coerce
-    .number({ invalid_type_error: 'Selecione uma categoria' })
+    .number('Selecione uma categoria')
     .int(),
   notes: z.string().max(300, 'Máximo 300 caracteres').optional(),
 });

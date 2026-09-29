@@ -2,23 +2,23 @@ import { z } from 'zod';
 
 export const AssinaturaSchema = z.object({
   description: z
-    .string({ required_error: 'Descrição é obrigatória' })
+    .string({ error: 'Descrição é obrigatória' })
     .min(3, 'Mínimo 3 caracteres')
     .max(100),
   amount: z.coerce
-    .number({ invalid_type_error: 'Informe um valor válido' })
+    .number({ error: 'Informe um valor válido' })
     .positive('O valor deve ser positivo'),
   billingDay: z.coerce
-    .number({ invalid_type_error: 'Informe um dia válido' })
+    .number({ error: 'Informe um dia válido' })
     .int()
     .min(1, 'Mínimo dia 1')
     .max(28, 'Máximo dia 28'),
   type: z.coerce
-    .number({ invalid_type_error: 'Selecione um tipo' })
+    .number({ error: 'Selecione um tipo' })
     .int()
     .refine((v) => [1, 2, 3].includes(v), 'Tipo inválido'),
   category: z.coerce
-    .number({ invalid_type_error: 'Selecione uma categoria' })
+    .number({ error: 'Selecione uma categoria' })
     .int()
     .positive(),
   isActive: z.boolean().default(true),
