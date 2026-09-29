@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from 'react';
+import { Suspense, useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ListLayout } from '@/layouts';
 import { Button, IconPlus } from '@/components/ui';
@@ -12,7 +12,7 @@ import AssinaturaCard from './_components/AssinaturaCard';
 const fmt = (val: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-export default function AssinaturasPage() {
+function AssinaturasContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [assinaturas, setAssinaturas] = useState<Assinatura[]>([]);
@@ -96,5 +96,13 @@ export default function AssinaturasPage() {
         ))
       )}
     </ListLayout>
+  );
+}
+
+export default function AssinaturasPage() {
+  return (
+    <Suspense>
+      <AssinaturasContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ListLayout } from '@/layouts';
 import { Button, IconPlus } from '@/components/ui';
@@ -9,7 +9,7 @@ import { Parcelamento } from '@/services/Parcelamentos/parcelamentos.types';
 import Filter from './_components/Filter';
 import ParcelamentoCard from './_components/ParcelamentoCard';
 
-export default function ParcelamentosPage() {
+function ParcelamentosContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [parcelamentos, setParcelamentos] = useState<Parcelamento[]>([]);
@@ -72,5 +72,13 @@ export default function ParcelamentosPage() {
         ))
       )}
     </ListLayout>
+  );
+}
+
+export default function ParcelamentosPage() {
+  return (
+    <Suspense>
+      <ParcelamentosContent />
+    </Suspense>
   );
 }
