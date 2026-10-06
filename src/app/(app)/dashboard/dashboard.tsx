@@ -7,6 +7,8 @@ import { KpiCard } from '@/app/_components/KpiCard/KpiCard';
 import { Button, IconPlus, IconTrendingUp, IconTrendingDown, IconWallet, IconCalendar } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
+import { useMinimumDelay } from '@/hooks/useMinimumDelay';
+import DashboardSkeleton from './DashboardSkeleton';
 
 const fmt = (val: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
@@ -38,9 +40,10 @@ const EMPTY: DashboardData = {
 export default function DashboardPageContent() {
   const [data, setData] = useState<DashboardData>(EMPTY);
   const [loading, setLoading] = useState(true);
+  const withMinimumDelay = useMinimumDelay(1000);
 
   useEffect(() => {
-    getDashboardData()
+    withMinimumDelay(getDashboardData())
       .then(setData)
       .catch(() => { /* 401 já tratado pelo interceptor do axios */ })
       .finally(() => setLoading(false));
@@ -61,6 +64,10 @@ export default function DashboardPageContent() {
 
   const now = new Date();
   const monthName = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -93,7 +100,7 @@ export default function DashboardPageContent() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-stagger">
         <KpiCard
           title="Receitas"
-          value={loading ? '...' : fmt(totalReceitas)}
+          value={fmt(totalReceitas)}
           subtitle={`${totalEntradas} entradas`}
           trendText="Este mês"
           trendUp={true}
@@ -105,7 +112,7 @@ export default function DashboardPageContent() {
         />
         <KpiCard
           title="Despesas"
-          value={loading ? '...' : fmt(totalDespesas)}
+          value={fmt(totalDespesas)}
           subtitle="Total de saídas"
           trendText="Este mês"
           trendUp={false}
@@ -117,7 +124,7 @@ export default function DashboardPageContent() {
         />
         <KpiCard
           title="Saldo"
-          value={loading ? '...' : fmt(saldo)}
+          value={fmt(saldo)}
           subtitle="Receitas − Despesas"
           trendText={saldo >= 0 ? 'Positivo' : 'Negativo'}
           trendUp={saldo >= 0}
@@ -129,7 +136,7 @@ export default function DashboardPageContent() {
         />
         <KpiCard
           title="Parcelamentos"
-          value={loading ? '...' : fmt(totalParcelamentos)}
+          value={fmt(totalParcelamentos)}
           subtitle="Pendentes"
           trendText="A vencer"
           Icon={IconCalendar}
@@ -154,9 +161,7 @@ export default function DashboardPageContent() {
             </Link>
           </div>
           <div className="divide-y divide-neutral-50">
-            {loading ? (
-              <p className="px-5 py-4 text-sm text-neutral-400">Carregando...</p>
-            ) : receitasRecentes.length === 0 ? (
+            {receitasRecentes.length === 0 ? (
               <p className="px-5 py-4 text-sm text-neutral-400">Nenhuma receita encontrada.</p>
             ) : (
               receitasRecentes.map((receita) => (
