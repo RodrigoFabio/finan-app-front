@@ -16,7 +16,7 @@ function DespesasContent() {
   const searchParams = useSearchParams();
   const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [loading, setLoading] = useState(true);
-  const withMinimumDelay = useMinimumDelay(1000);
+  const withMinimumDelay = useMinimumDelay(500);
 
   useEffect(() => {
     const query: ListDespesasQuery = {};

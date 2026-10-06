@@ -19,7 +19,7 @@ function AssinaturasContent() {
   const searchParams = useSearchParams();
   const [assinaturas, setAssinaturas] = useState<Assinatura[]>([]);
   const [loading, setLoading] = useState(true);
-  const withMinimumDelay = useMinimumDelay(1000);
+  const withMinimumDelay = useMinimumDelay(500);
 
   useEffect(() => {
     setLoading(true);

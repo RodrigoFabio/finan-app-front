@@ -16,7 +16,7 @@ function ReceitasContent() {
   const searchParams = useSearchParams();
   const [receitas, setReceitas] = useState<Receita[]>([]);
   const [loading, setLoading] = useState(true);
-  const withMinimumDelay = useMinimumDelay(1000);
+  const withMinimumDelay = useMinimumDelay(500);
 
   useEffect(() => {
     const query: ListReceitasQuery = {};

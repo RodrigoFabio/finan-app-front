@@ -16,7 +16,7 @@ function ParcelamentosContent() {
   const searchParams = useSearchParams();
   const [parcelamentos, setParcelamentos] = useState<Parcelamento[]>([]);
   const [loading, setLoading] = useState(true);
-  const withMinimumDelay = useMinimumDelay(1000);
+  const withMinimumDelay = useMinimumDelay(500);
 
   useEffect(() => {
     setLoading(true);

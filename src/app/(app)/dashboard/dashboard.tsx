@@ -40,7 +40,7 @@ const EMPTY: DashboardData = {
 export default function DashboardPageContent() {
   const [data, setData] = useState<DashboardData>(EMPTY);
   const [loading, setLoading] = useState(true);
-  const withMinimumDelay = useMinimumDelay(1000);
+  const withMinimumDelay = useMinimumDelay(500);
 
   useEffect(() => {
     withMinimumDelay(getDashboardData())
