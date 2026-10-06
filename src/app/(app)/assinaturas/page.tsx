@@ -3,11 +3,13 @@
 import { Suspense, useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ListLayout } from '@/layouts';
-import { Button, IconPlus } from '@/components/ui';
+import { Button, IconPlus, Skeleton } from '@/components/ui';
 import { getAssinaturas } from '@/services/Assinaturas/assinaturas.service';
 import { Assinatura } from '@/services/Assinaturas/assinaturas.types';
+import { useMinimumDelay } from '@/hooks/useMinimumDelay';
 import Filter from './_components/Filter';
 import AssinaturaCard from './_components/AssinaturaCard';
+import { AssinaturaListSkeleton } from './_components/AssinaturaCardSkeleton';
 
 const fmt = (val: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
@@ -17,10 +19,11 @@ function AssinaturasContent() {
   const searchParams = useSearchParams();
   const [assinaturas, setAssinaturas] = useState<Assinatura[]>([]);
   const [loading, setLoading] = useState(true);
+  const withMinimumDelay = useMinimumDelay(1000);
 
   useEffect(() => {
     setLoading(true);
-    getAssinaturas()
+    withMinimumDelay(getAssinaturas())
       .then((data) => {
         const isActiveParam = searchParams.get('isActive');
         const typeParam = searchParams.get('type');
@@ -65,22 +68,28 @@ function AssinaturasContent() {
             <p className="text-xs font-medium text-violet-600 uppercase tracking-wide mb-1">
               Assinaturas Ativas
             </p>
-            <p className="text-2xl font-bold text-violet-900">{resumo.ativas}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-10" />
+            ) : (
+              <p className="text-2xl font-bold text-violet-900">{resumo.ativas}</p>
+            )}
           </div>
           <div className="bg-white rounded-lg p-3 border border-violet-200 shadow-sm">
             <p className="text-xs font-medium text-violet-600 uppercase tracking-wide mb-1">
               Custo Mensal
             </p>
-            <p className="text-2xl font-bold text-violet-900">{fmt(resumo.custoMensal)}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-24" />
+            ) : (
+              <p className="text-2xl font-bold text-violet-900">{fmt(resumo.custoMensal)}</p>
+            )}
           </div>
         </div>
       </div>
 
       {/* Lista */}
       {loading ? (
-        <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
-          Carregando...
-        </div>
+        <AssinaturaListSkeleton />
       ) : assinaturas.length === 0 ? (
         <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
           Nenhuma assinatura encontrada.

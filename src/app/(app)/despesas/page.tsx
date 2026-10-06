@@ -6,14 +6,17 @@ import { ListLayout } from '@/layouts';
 import { Button, IconPlus } from '@/components/ui';
 import { getDespesas } from '@/services/Despesas/despesas.service';
 import { Despesa, ListDespesasQuery } from '@/services/Despesas/despesas.types';
+import { useMinimumDelay } from '@/hooks/useMinimumDelay';
 import Filter from './_components/Filter';
 import DespesaCard from './_components/DespesaCard';
+import { DespesaListSkeleton } from './_components/DespesaCardSkeleton';
 
 function DespesasContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [loading, setLoading] = useState(true);
+  const withMinimumDelay = useMinimumDelay(1000);
 
   useEffect(() => {
     const query: ListDespesasQuery = {};
@@ -25,7 +28,7 @@ function DespesasContent() {
     if (category) query.category = Number(category);
 
     setLoading(true);
-    getDespesas(query)
+    withMinimumDelay(getDespesas(query))
       .then((result) => setDespesas(result.items))
       .finally(() => setLoading(false));
   }, [searchParams]);
@@ -45,9 +48,7 @@ function DespesasContent() {
       filters={<Filter />}
     >
       {loading ? (
-        <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
-          Carregando...
-        </div>
+        <DespesaListSkeleton />
       ) : despesas.length === 0 ? (
         <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
           Nenhuma despesa encontrada.

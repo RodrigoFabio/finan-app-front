@@ -6,18 +6,21 @@ import { ListLayout } from '@/layouts';
 import { Button, IconPlus } from '@/components/ui';
 import { getParcelamentos, cancelarParcelamento } from '@/services/Parcelamentos/parcelamentos.service';
 import { Parcelamento } from '@/services/Parcelamentos/parcelamentos.types';
+import { useMinimumDelay } from '@/hooks/useMinimumDelay';
 import Filter from './_components/Filter';
 import ParcelamentoCard from './_components/ParcelamentoCard';
+import { ParcelamentoListSkeleton } from './_components/ParcelamentoCardSkeleton';
 
 function ParcelamentosContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [parcelamentos, setParcelamentos] = useState<Parcelamento[]>([]);
   const [loading, setLoading] = useState(true);
+  const withMinimumDelay = useMinimumDelay(1000);
 
   useEffect(() => {
     setLoading(true);
-    getParcelamentos()
+    withMinimumDelay(getParcelamentos())
       .then((data) => {
         const status = searchParams.get('status');
         const startDate = searchParams.get('startDate');
@@ -54,9 +57,7 @@ function ParcelamentosContent() {
       filters={<Filter />}
     >
       {loading ? (
-        <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
-          Carregando...
-        </div>
+        <ParcelamentoListSkeleton />
       ) : parcelamentos.length === 0 ? (
         <div className="flex items-center justify-center py-12 text-sm text-neutral-500">
           Nenhum parcelamento encontrado.
